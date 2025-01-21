@@ -10,4 +10,16 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: 'localhost',
+        port: 5173,
+        strictPort: true,
+        cors: {
+            origin: 'http://localhost', // Update this to match your Laravel app's URL
+            credentials: true,
+        },
+        hmr: {
+            host: 'localhost',
+        },
+    },
 });

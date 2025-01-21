@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\AdultAge;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,17 +33,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'username' => 'required|string|unique:'.User::class,
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'dob' => 'required',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'last_name'  => 'nullable|string|max:255',
+            'username'   => 'required|string|unique:'.User::class,
+            'email'      => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'dob'        => ['required', 'date', new AdultAge],
+            'password'   => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'username'   => $request->username,
+            'email'      => $request->email,
+            'dob'        => $request->dob,
+            'about_me'   => $request->about_me,
+            'password'   => Hash::make($request->password),
         ]);
 
         event(new Registered($user));
